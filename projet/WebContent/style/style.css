@@ -1,0 +1,137 @@
+@CHARSET "UTF-8";
+
+body
+{
+	margin : auto;
+}
+
+h1
+{
+	margin : 20px auto;
+	text-align : center;
+}
+
+h2,h3
+{
+	margin: auto;
+	text-align : center;
+}
+
+div
+{
+	border : 2px solid black;
+}
+
+#pannesaisie
+{
+	margin : auto;
+	padding: 2px;
+	width : 400px;
+	height : auto;
+}
+
+#panneauto
+{
+	margin: auto;
+	margin-top : 10px;
+	padding: 2px;
+	width : 400px;
+	height : auto;
+}
+
+#pannes
+{
+	margin: auto;
+	margin-top : 10px;
+	padding: 2px;
+	width : 400px;
+	height : auto;
+}
+#pannesOnTime
+{
+	margin: auto;
+	margin-top : 10px;
+	padding: 2px;
+	width : 400px;
+	height : auto;
+}
+
+#info
+{
+	margin: auto;
+	margin-top : 10px;
+	text-align : center;
+	background-color : silver;
+	padding : 2px;
+	width: 400px;
+	height : 85px;
+	overflow : auto;
+}
+
+#beforeUpdate
+{
+	position : absolute;
+	right : 10px;
+	top : 10px;
+	border : none;
+	font-family : sans-serif, cursive;
+	font-size : 12px;
+	width : 250px;
+}
+
+#reloadlink
+{
+	position : absolute;
+	top : 10px;
+	right : 10px;
+	border : none;
+	font-family : sans-serif, cursive;
+	font-size : 12px;
+	text-decoration : underline;
+	color : black;
+}
+
+#content
+{
+	margin: auto;
+	margin-top : 20px;
+	text-align : center;
+	width: 680px;
+	max-height : 500px;
+	overflow : auto;
+	border : none;
+}
+
+#generalMonitor
+{
+	text-align : center;
+	font-weight: bold;
+	margin: auto;
+	width : 400px;
+}
+#reload, button
+{
+	display : block;
+	margin : auto;
+	margin-top : 20px;
+}
+
+.online
+{
+	display : inline-block;
+	margin : auto;
+}
+
+#buttonGeneration
+{
+	display : block;
+	margin : auto;
+	margin-top : 20px;
+	text-align : center;
+}
+
+form > p
+{
+	text-align : center;
+	margin : 10px auto;
+}
