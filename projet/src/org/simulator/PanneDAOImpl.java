@@ -186,27 +186,6 @@ public class PanneDAOImpl implements PanneDAO
 		}		
 		return typepanne;
 	}
-
-	public int nbMinute() {
-		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<60;");
-	}
-
-	public int nbHour() {
-		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<3600;");
-	}
-
-	public int nbDay() {
-		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<86400;");
-	}
-
-	public int nbMonth() {
-		// 1 mois de 30 jours
-		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<2592000;");
-	}
-
-	public int nbEver() {
-		return count("select count(id) as n from pannes;");
-	}
 	
 	private int count(String query) {
 		Connection conn = null;
@@ -280,6 +259,32 @@ public class PanneDAOImpl implements PanneDAO
 			}
 		}
 		return listWithErr;
+	}
+	public int nbMinute() {
+		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<60;");
+	}
+
+	public int nbHour() {
+		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<3600;");
+	}
+
+	public int nbDay() {
+		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<86400;");
+	}
+
+	public int nbMonth() {
+		// 1 mois de 30 jours
+		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<2592000;");
+	}
+
+	public int nbEver() {
+		return count("select count(id) as n from pannes;");
+	}
+	
+	public int nbPanne(int heureDebut, int duree, int jour, int mois, int annee)
+	{
+		String heure = "\""+annee+"-"+mois+"-"+jour+" "+heureDebut+":00:00\"";
+		return count("select count(*) as n from pannes where heure>="+heure+" AND (heure<addtime("+heure+",\""+duree+":00:00\"));");
 	}
 	
 	private TypePanne toTypePanne(String n)

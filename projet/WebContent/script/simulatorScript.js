@@ -7,6 +7,10 @@ var BEFORE_CONNECT = 5;
 var webSocket;
 var messages = document.getElementById("infoContent");
 
+(function() {
+	openSocket();
+})();
+
 function updateMessage(responseText)
 {
 	var response = JSON.parse(responseText);
@@ -103,10 +107,6 @@ function getXMLHttpRequest()
 	return xhr;
 }
 
-(function() {
-	openSocket();
-})();
-
 function openSocket(){
     // Ensures only one connection is open at a time
     if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
@@ -181,6 +181,7 @@ function sendType()
 }
 
 function closeSocket(){
+	alert("closing");
     webSocket.close();
 }
 

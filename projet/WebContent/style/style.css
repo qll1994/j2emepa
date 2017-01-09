@@ -109,17 +109,16 @@ div
 	margin: auto;
 	width : 400px;
 }
-#reload, button
+#reload, .button
 {
 	display : block;
 	margin : auto;
 	margin-top : 20px;
 }
 
-.online
+#buttonOverTime, #buttonStop
 {
 	display : inline-block;
-	margin : auto;
 }
 
 #buttonGeneration
@@ -134,4 +133,17 @@ form > p
 {
 	text-align : center;
 	margin : 10px auto;
+}
+
+#graph
+{
+	margin: auto;
+	margin-top : 20px;
+	text-align : center;
+	width: 680px;
+}
+
+#graph>div
+{
+	border : none;
 }

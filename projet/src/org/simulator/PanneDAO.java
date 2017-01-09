@@ -12,6 +12,7 @@ public interface PanneDAO
 	int nbDay();
 	int nbMonth();
 	int nbEver();
+	int nbPanne(int heureDebut, int duree, int jour, int mois, int annee);
 	
 	ListWithErr<Panne> lastMinute();
 	ListWithErr<Panne> lastHour();

@@ -12,6 +12,33 @@ var BEFORE_CONNECT = 5;
 var webSocket;
 var messages = document.getElementById("infoContent");
 
+(function() {
+
+	var inputs = document.getElementsByClassName('buttonNumber'), inputsLen = inputs.length;
+
+	for (var i = 0; i < inputsLen; i++) {
+		inputs[i].onclick = function() {
+			current = this.name;
+			reload();
+			document.getElementById("infoContent").innerHTML = "None";
+		};
+	}		
+	
+	var reloadbutton = document.getElementById("reload");
+	reloadbutton.onclick = function() {
+		document.getElementById("infoContent").innerHTML = "None";
+		reload();
+	}
+	
+	var drawGraph = document.getElementById("drawGraph");
+	drawGraph.onclick = function(){
+		getDataGraph();
+	}	
+	request(loadNumber,"param=number");
+	setReload();
+	openSocket(); 
+})();
+
 function reload()
 {
 	if(current != null)
@@ -145,6 +172,50 @@ function updateTime()
 	document.getElementById("beforeUpdateContent").innerHTML = content;	
 }
 
+function getDataGraph()
+{
+	var param;
+	
+	var day = document.getElementById("dayGraph").value; 
+	var month = document.getElementById("monthGraph").value; 
+	var year = document.getElementById("yearGraph").value; 
+	
+	param="param=graph&day="+day+"&month="+month+"&year="+year;
+	request(drawGraph,param);
+}
+
+function drawGraph(responseText)
+{
+	var response = JSON.parse(responseText);
+	var arrayName = new Array();
+	var arrayValue = new Array();
+	
+	if(response["message"]!=null)
+	{
+		document.getElementById('infoContent').innerHTML = response["message"]; // Et on affiche !
+		current = null;
+		document.getElementById('content').innerHTML = "";
+	}
+	else if(response["graph"] != null)
+	{
+		var numbers = response["graph"];
+		Object.getOwnPropertyNames(numbers).forEach(function(key){
+			  var num = numbers[key];
+			  arrayName.push(key);
+			  arrayValue.push(num);
+		});
+		
+		/*
+		 * ###################################################################################
+		 * Tracer le graphe ici :
+		 * 		- arrayName est un tableau contenant les créneaux ["0-1","1-2",.....,"22-23","23-24"]   <-- facultatif
+		 * 		- arrayValue est un tableau contenant les valeurs. Ex : [0,0,0,0,0,0,0,0,0,2,6,3,0,9,4,1,3,5,3,4,0,0,0,0]
+		 * 
+		 * L'element ou tracer le graphe est dans docuement.getElementById('graphContent'); (c'est une balise div)
+		 */
+	}
+}
+
 function request(callback, param)	//callback est une fonction, param une String
 {
 	var xhr = getXMLHttpRequest();
@@ -195,29 +266,6 @@ function getXMLHttpRequest()
 	}	
 	return xhr;
 }
-
-(function() {
-
-	var inputs = document.getElementsByClassName('buttonNumber'), inputsLen = inputs.length;
-
-	for (var i = 0; i < inputsLen; i++) {
-		inputs[i].onclick = function() {
-			current = this.name;
-			reload();
-			document.getElementById("infoContent").innerHTML = "None";
-		};
-	}		
-	
-	var reloadbutton = document.getElementById("reload");
-	reloadbutton.onclick = function() {
-		document.getElementById("infoContent").innerHTML = "None";
-		reload();
-	}
-	request(loadNumber,"param=number");
-	setReload();
-	openSocket(); 
-})();
-
 function openSocket(){
     // Ensures only one connection is open at a time
     if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){

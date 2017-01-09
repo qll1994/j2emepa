@@ -106,6 +106,46 @@ public class MonitorServlet extends HttpServlet {
 					json = convertToJson(m);
 				}
 			}
+			else if(param.equals("graph"))
+			{				
+				if((request.getParameter("day")!=null) && (request.getParameter("month")!=null) && (request.getParameter("year")!=null) && !request.getParameter("day").equals("") && !request.getParameter("month").equals("") && !request.getParameter("year").equals(""))
+				{
+					try
+					{
+						int jour = Integer.valueOf(request.getParameter("day"));
+						int mois = Integer.valueOf(request.getParameter("month"));
+						int annee = Integer.valueOf(request.getParameter("year"));	
+						
+						ListWithErr<Integer> list = panneService.nbPannesJour(jour, mois, annee);
+						
+						if(list.isValide() && (list.getList().size()==24))
+						{
+							Iterator<Integer> it = list.getList().iterator();
+							int i=0;
+							int[] tab = new int[24];
+							while(it.hasNext())
+							{
+								tab[i] = it.next();
+								i++;
+							}
+							json = convertToJson(tab);
+						}
+						else
+						{
+							json = convertToJson("Error : Unable to search in database.");
+						}
+						
+					}
+					catch(Exception e)
+					{
+						json = convertToJson("Error : Bad parameter.");
+					}
+				}
+				else
+				{
+					json = convertToJson("Error : Missing parameter.");
+				}
+			}
 			else 
 			{
 				ListWithErr<Panne> listPannes = null;
@@ -193,6 +233,21 @@ public class MonitorServlet extends HttpServlet {
 	{
 		return "{ \"minute\": \" "+minute+" \", \"hour\": \" "+hour+" \" , \"day\": \" "+day+" \" , \"month\": \" "+month+" \" , \"ever\": \" "+ever+" \" }";
 	}
+
+	private static String convertToJson(int[] tab)
+	{
+		String json = "{ \"graph\" : {";
+		for(int i=0; i<tab.length; i++)
+		{
+			if(i!=0)
+			{
+				json+= ", ";
+			}
+			json += "\""+i+"-"+(i+1)+"\" : \""+tab[i]+"\"";
+		}
+		json += "}}";
+		return json;
+	}	
 	
 	private static String convertToJson(List<Panne> listPannes)
 	{

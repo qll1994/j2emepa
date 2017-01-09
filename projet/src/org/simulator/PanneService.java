@@ -13,6 +13,8 @@ public interface PanneService
 	int nbMonth();
 	int nbEver();
 	
+	ListWithErr<Integer> nbPannesJour(int jour, int mois, int annee);
+	
 	ListWithErr<Panne> lastMinute();
 	ListWithErr<Panne> lastHour();
 	ListWithErr<Panne> lastDay();

@@ -114,54 +114,8 @@ public class SimulatorServlet extends HttpServlet {
 			{
 				String machine = request.getParameter("machine").toLowerCase();
 				String typepanneName = request.getParameter("typepanne");
-				TypePanne typepanne = null;			
 				
-				boolean ok = true;
-				//verification des saisies
-				if(machine.length() != 16)
-				{
-					ok = false;
-				}
-				else
-				{
-					int i=0;
-					while((i<machine.length()) && ok )
-					{
-						Character c= machine.charAt(i);
-						if( !((Character.isDigit(c)) || ( (c>='a') && (c<='f'))) )
-						{
-							ok = false;
-						}
-						i++;
-					}
-				}			
-				if(typepanneName.equals("reseau"))
-				{
-					typepanne = TypePanne.RESEAU;
-				}
-				else if(typepanneName.equals("crashdisque"))
-				{
-					typepanne = TypePanne.CRASH_DISQUE;
-				}
-				else if(typepanneName.equals("memoire"))
-				{
-					typepanne = TypePanne.PROBLEME_MEMOIRE;
-				}
-				
-				if( (typepanne != null) && ok)
-				{
-					String message = panneService.ajoutPanne(machine, typepanne);
-					
-					if(message!=null)
-					{
-						json = convertToJson(message);
-					}
-					updateMonitors();
-				}
-				else
-				{
-					json = convertToJson("Error : Bad format for the 'Targeted machine' field. ");
-				}
+				json = generateBreakdown(machine,typepanneName);
 			}				
 		}
 		else if( request.getParameter("nombre")!=null)
@@ -175,19 +129,7 @@ public class SimulatorServlet extends HttpServlet {
 				try
 				{
 					int nbPannes = Integer.valueOf(request.getParameter("nombre"));
-					String message;
-					if(nbPannes < 2)
-					{
-						message = "The number of breakdowns must be greater than or equal to 2.";
-					}
-					else
-					{
-						message = panneService.ajoutPannes(nbPannes);
-					}
-					if(message!=null)
-					{
-						json = convertToJson(message);
-					}
+					json = generateXBreakdowns(nbPannes);
 					updateMonitors();
 				}
 				catch(Exception e)
@@ -208,66 +150,8 @@ public class SimulatorServlet extends HttpServlet {
 				{
 					int nbPannes = Integer.valueOf(request.getParameter("nombreDuree"));
 					int duree = Integer.valueOf(request.getParameter("duree"));
-					String message;
 					
-					if( currentPannes == null )
-					{
-						if( (nbPannes<2) || (duree<20) )
-						{
-							message = "The number of breakdowns must be greater than or equal to 2. The duration must be greater than or equal to 20 secondes.";
-						}
-						else
-						{
-							int inter = duree / nbPannes;
-							if(inter < DUREE_LIMIT)
-							{
-								message = "There are too many breakdowns for this duration. Minimum " + DUREE_LIMIT + " secondes per breakdown. ";
-							}
-							else
-							{
-								currentPannes = new PannesDuree(nbPannes, duree, inter);
-								
-								 minuteur = new Timer();
-							     tache = new TimerTask() {
-							            public void run() {
-							            	String message;
-							            	currentPannes.setDureeRestante(currentPannes.getDureeRestante() - currentPannes.getInter());
-							            		
-						            		message = panneService.ajoutPanneAlea();
-						            		if(message.equals("Breakdown properly added."))
-						            		{
-						            			currentPannes.setNbPannesCurrent(currentPannes.getNbPannesCurrent()+1);
-						            			message = currentPannes.getNbPannesCurrent()+" breakdown(s) on "+currentPannes.getNbPannesTotal()+" already generated. Remaining time : " + currentPannes.getDureeRestante() + " secondes. Total time : " + currentPannes.getDuree() + " secondes .";
-						            		}
-						            		else
-						            		{
-						            			message = "Error : a breakdown could not be generated.";
-
-						            		}
-						            		if( (currentPannes.getDureeRestante() <= 0) || (currentPannes.getNbPannesCurrent()>=currentPannes.getNbPannesTotal()) )
-							            	{
-							            		message = "Generation over time just ended : " + currentPannes.getNbPannesCurrent()+" breakdown(s) on "+currentPannes.getNbPannesTotal()+" have been generated over "+ currentPannes.getDuree() + " secondes .";
-							            		this.cancel();		
-							            		currentPannes = null;
-							            	}
-						            		updateMonitors();
-							            	sendToSimulators(message);				
-							            }
-							        };
-							        minuteur.schedule(tache, inter*1000, inter*1000);
-								
-								message = nbPannes+ " breakdowns will be generated over a period of " + duree + " secondes. ";
-							}
-						}
-					}
-					else
-					{
-						message = "Breakdowns generation over time is already set : "+currentPannes.getNbPannesCurrent()+" breakdown(s) on "+currentPannes.getNbPannesTotal()+" already generated. Remaining time : " + currentPannes.getDureeRestante() + "secondes (+/- " + currentPannes.getInter() + " secondes). Total time : " + currentPannes.getDuree() + "secondes .";
-					}
-					if(message!=null)
-					{
-						json = convertToJson(message);
-					}				
+					json = generateBreakdownsOverTime(nbPannes, duree);
 				}
 				catch(Exception e)
 				{
@@ -297,7 +181,7 @@ public class SimulatorServlet extends HttpServlet {
 			{
 				json = convertToJson("There is no generation in progress. ");
 			}
-		}	
+		}
 		
 		response.setContentType("application/json");
 		PrintWriter out;
@@ -311,6 +195,144 @@ public class SimulatorServlet extends HttpServlet {
 		{
 			e1.printStackTrace();
 		}
+	}
+	
+	private String generateBreakdown(String machine, String typepanneName)
+	{
+		String json="";
+		TypePanne typepanne = null;			
+		
+		boolean ok = true;
+		//verification des saisies
+		if(machine.length() != 16)
+		{
+			ok = false;
+		}
+		else
+		{
+			int i=0;
+			while((i<machine.length()) && ok )
+			{
+				Character c= machine.charAt(i);
+				if( !((Character.isDigit(c)) || ( (c>='a') && (c<='f'))) )
+				{
+					ok = false;
+				}
+				i++;
+			}
+		}			
+		if(typepanneName.equals("reseau"))
+		{
+			typepanne = TypePanne.RESEAU;
+		}
+		else if(typepanneName.equals("crashdisque"))
+		{
+			typepanne = TypePanne.CRASH_DISQUE;
+		}
+		else if(typepanneName.equals("memoire"))
+		{
+			typepanne = TypePanne.PROBLEME_MEMOIRE;
+		}
+		
+		if( (typepanne != null) && ok)
+		{
+			String message = panneService.ajoutPanne(machine, typepanne);
+			
+			if(message!=null)
+			{
+				json = convertToJson(message);
+			}
+			updateMonitors();
+		}
+		else
+		{
+			json = convertToJson("Error : Bad format for the 'Targeted machine' field. ");
+		}
+		return json;
+	}
+	
+	private String generateXBreakdowns(int nbPannes)
+	{
+		String json="";
+		String message;
+		if(nbPannes < 2)
+		{
+			message = "The number of breakdowns must be greater than or equal to 2.";
+		}
+		else
+		{
+			message = panneService.ajoutPannes(nbPannes);
+		}
+		if(message!=null)
+		{
+			json = convertToJson(message);
+		}
+		return json;
+	}
+	
+	private String generateBreakdownsOverTime(int nbPannes, int duree)
+	{
+		String json="";
+		String message;		
+		if( currentPannes == null )
+		{
+			if( (nbPannes<2) || (duree<20) )
+			{
+				message = "The number of breakdowns must be greater than or equal to 2. The duration must be greater than or equal to 20 secondes.";
+			}
+			else
+			{
+				int inter = duree / nbPannes;
+				if(inter < DUREE_LIMIT)
+				{
+					message = "There are too many breakdowns for this duration. Minimum " + DUREE_LIMIT + " secondes per breakdown. ";
+				}
+				else
+				{
+					currentPannes = new PannesDuree(nbPannes, duree, inter);
+					
+					 minuteur = new Timer();
+				     tache = new TimerTask() {
+				            public void run() {
+				            	String message;
+				            	currentPannes.setDureeRestante(currentPannes.getDureeRestante() - currentPannes.getInter());
+				            		
+			            		message = panneService.ajoutPanneAlea();
+			            		if(message.equals("Breakdown properly added."))
+			            		{
+			            			currentPannes.setNbPannesCurrent(currentPannes.getNbPannesCurrent()+1);
+			            			message = currentPannes.getNbPannesCurrent()+" breakdown(s) on "+currentPannes.getNbPannesTotal()+" already generated. Remaining time : " + currentPannes.getDureeRestante() + " secondes. Total time : " + currentPannes.getDuree() + " secondes .";
+			            		}
+			            		else
+			            		{
+			            			message = "Error : a breakdown could not be generated.";
+
+			            		}
+			            		if( (currentPannes.getDureeRestante() <= 0) || (currentPannes.getNbPannesCurrent()>=currentPannes.getNbPannesTotal()) )
+				            	{
+				            		message = "Generation over time just ended : " + currentPannes.getNbPannesCurrent()+" breakdown(s) on "+currentPannes.getNbPannesTotal()+" have been generated over "+ currentPannes.getDuree() + " secondes .";
+				            		this.cancel();		
+				            		currentPannes = null;
+				            	}
+			            		updateMonitors();
+				            	sendToSimulators(message);				
+				            }
+				        };
+				        minuteur.schedule(tache, inter*1000, inter*1000);
+					
+					message = nbPannes+ " breakdowns will be generated over a period of " + duree + " secondes. ";
+				}
+			}
+		}
+		else
+		{
+			message = "Breakdowns generation over time is already set : "+currentPannes.getNbPannesCurrent()+" breakdown(s) on "+currentPannes.getNbPannesTotal()+" already generated. Remaining time : " + currentPannes.getDureeRestante() + "secondes (+/- " + currentPannes.getInter() + " secondes). Total time : " + currentPannes.getDuree() + "secondes .";
+		}
+		if(message!=null)
+		{
+			json = convertToJson(message);
+		}	
+		return json;
 	}
 	
 	private static void updateMonitors()

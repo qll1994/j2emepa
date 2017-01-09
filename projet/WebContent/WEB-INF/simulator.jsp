@@ -22,13 +22,13 @@
 						<option value="memoire">Memory problem</option>
 					</select>
 				</p>
-				<button type="submit" onclick="generate()" >Generate</button>
+				<input class="button" type="submit" onclick="generate()" value="Generate"/>
 	 		</form> 
 		</div>
 		<div id="panneauto">
 			<h2>Random breakdown</h2>
 			<form target="noone">
-				<button type="submit" onclick="randomGenerate()">Generate random breakdown</button>
+				<input class="button" type="submit" onclick="randomGenerate()" value="Generate random breakdown"/>
 			</form>
 		</div>
 		<div id="pannes">
@@ -37,7 +37,7 @@
 				<p>
 					<label for="nombre">Number of breakdowns : </label><input type="number" name="nombre" id="nombre" min=2 required/>
 				</p>
-				<button type="submit" onclick="manyGenerate()">Generate breakdowns</button>
+				<input class="button" type="submit" onclick="manyGenerate()" value="Generate breakdowns"/>
 			</form>
 		</div>
 		<div id="pannesOnTime">
@@ -50,8 +50,8 @@
 					<label for="duree">Time (seconde) : </label><input type="number" id="dureeOnTime" name="duree" min=20 required/>
 				</p>
 				<span id="buttonGeneration">
-					<button class="online" type="submit" onclick="generateOverTime()">Generate breakdowns</button>
-					<button class="online" type="button" onclick="stopGeneration()">Stop generation</button>
+					<input class="button" id="buttonOverTime" type="submit" onclick="generateOverTime()" value="Generate breakdowns"/>
+					<input class="button" id="buttonStop" type="button" onclick="stopGeneration()" value="Stop generation"/>
 				</span>				
 			</form>
 		</div>
