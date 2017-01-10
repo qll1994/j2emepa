@@ -12,7 +12,7 @@
 			<h2>Custom breakdown</h2>
 			<form target="noone">
 				<p>
-					<label for="machine">Targeted machine : </label><input title="16 hexadecimal characters. Ex : AF109AFF023CDE56" id="machine" type="text" name="machine" pattern="[a-fA-F0-9]{16}" required/>
+					<label for="machine">Targeted machine : </label><input class="data" title="16 hexadecimal characters. Ex : AF109AFF023CDE56" id="machine" type="text" name="machine" pattern="[a-fA-F0-9]{16}" required="true"/>
 				</p>
 				<p>
 					<label for="typepanne">Type of breakdown : </label>
@@ -22,35 +22,35 @@
 						<option value="memoire">Memory problem</option>
 					</select>
 				</p>
-				<input class="button" type="submit" onclick="generate()" value="Generate"/>
+				<input class="button" type="button" onclick="generate()" value="Generate"/>
 	 		</form> 
 		</div>
 		<div id="panneauto">
 			<h2>Random breakdown</h2>
 			<form target="noone">
-				<input class="button" type="submit" onclick="randomGenerate()" value="Generate random breakdown"/>
+				<input class="button" type="button" onclick="randomGenerate()" value="Generate random breakdown"/>
 			</form>
 		</div>
 		<div id="pannes">
 			<h2>Many breakdowns at once</h2>
 			<form target="noone">
 				<p>
-					<label for="nombre">Number of breakdowns : </label><input type="number" name="nombre" id="nombre" min=2 required/>
+					<label for="nombre">Number of breakdowns : </label><input class="data" type="number" name="nombre" id="nombre" min=2 required="true"/>
 				</p>
-				<input class="button" type="submit" onclick="manyGenerate()" value="Generate breakdowns"/>
+				<input class="button" type="button" onclick="manyGenerate()" value="Generate breakdowns"/>
 			</form>
 		</div>
 		<div id="pannesOnTime">
 			<h2>Many breakdowns over time</h2>
 			<form target="noone">
 				<p>
-					<label for="nombre">Number of breakdowns : </label><input type="number" id="nbOnTime" name="nombreDuree" min=2 required/>
+					<label for="nombre">Number of breakdowns : </label><input class="data" type="number" id="nbOnTime" name="nombreDuree" min=2 required="true"/>
 				</p>
 				<p>
-					<label for="duree">Time (seconde) : </label><input type="number" id="dureeOnTime" name="duree" min=20 required/>
+					<label for="duree">Time (seconde) : </label><input class="data" type="number" id="dureeOnTime" name="duree" min=20 required="true"/>
 				</p>
 				<span id="buttonGeneration">
-					<input class="button" id="buttonOverTime" type="submit" onclick="generateOverTime()" value="Generate breakdowns"/>
+					<input class="button" id="buttonOverTime" type="button" onclick="generateOverTime()" value="Generate breakdowns"/>
 					<input class="button" id="buttonStop" type="button" onclick="stopGeneration()" value="Stop generation"/>
 				</span>				
 			</form>
@@ -59,7 +59,6 @@
 			<b>Information :</b>
 			<p id="infoContent">None</p>
 		</div>
-		<iframe style="display:none;" name="noone"></iframe>
 	<script type="text/javascript" src="./script/simulatorScript.js"></script>
 	</body>
 </html>

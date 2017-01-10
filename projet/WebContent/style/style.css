@@ -109,6 +109,12 @@ div
 	margin: auto;
 	width : 400px;
 }
+
+.data
+{
+	box-shadow : none;
+}
+
 #reload, .button
 {
 	display : block;

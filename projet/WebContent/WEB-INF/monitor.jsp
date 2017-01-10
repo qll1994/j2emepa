@@ -50,7 +50,7 @@
 	</div>
 	<div id="content"></div>
 	<div id="graph">
-		<form target="noone">
+		<form>
 			<p>
 				<label for="dayGraph">Day : </label>
 				<select name="dayGraph" id="dayGraph">
@@ -106,13 +106,12 @@
 			</p>
 			<p>
 				<label for="yearGraph">Year : </label>
-				<input type="number" name="yearGraph" id="yearGraph" min=2015 required/>					
+				<input type="number" name="yearGraph" id="yearGraph" min=2015 required="true"/>					
 			</p>
-			<input class="button" type="submit" id="drawGraph" value="Draw !"/>
+			<input class="button" type="button" id="drawGraph" value="Draw !"/>
  		</form> 
 		<div id="graphContent"></div>
 	</div>
-	<iframe style="display:none;" name="noone"></iframe>
 	<script type="text/javascript" src="./script/monitorScript.js"></script>
 </body>
 </html>

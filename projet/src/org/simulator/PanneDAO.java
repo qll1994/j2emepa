@@ -3,8 +3,6 @@ package org.simulator;
 public interface PanneDAO 
 {
 	String add(String machine, TypePanne typepanne);
-	String addRandom();
-	String addMany(int nbPannes);
 	String fix(int id, boolean fixed);
 	
 	int nbMinute();

@@ -14,12 +14,39 @@ public class PanneServiceImpl implements PanneService
 
 	public String ajoutPanneAlea()
 	{
-		return panneDao.addRandom();
+		String machine = this.randomMachine();
+		return panneDao.add(machine, this.randomTypePanne(machine));
 	}
 	
 	public String ajoutPannes(int nbPannes)
 	{
-		return panneDao.addMany(nbPannes);
+		int cpt = nbPannes;	
+		int i=0;
+		boolean stop = false;
+		
+		while(!stop && i<nbPannes)
+		{
+			String tmp = this.ajoutPanneAlea();
+			if(tmp.equals("Error : Unable to reach database."))
+			{
+				stop = true;
+				cpt = 0;
+			}
+			else if(!tmp.equals("Breakdown properly added."))
+			{
+				cpt--;
+			}
+			i++;
+		}
+		
+		if(stop)
+		{
+			return "Error : Unable to reach database.";
+		}
+		else
+		{
+			return cpt+" out of "+ nbPannes +" breakdown(s) properly added.";
+		}
 	}
 
 	public int nbMinute() {
@@ -110,5 +137,47 @@ public class PanneServiceImpl implements PanneService
 
 	public String fix(int id, boolean fixed) {
 		return panneDao.fix(id,fixed);
+	}
+	
+	private String randomMachine()
+	{
+		String machine = "";
+		
+		for(int i=0;i<16;i++)
+		{
+			Integer n = new Integer((int)(Math.random()*16));
+			machine += Integer.toHexString(n);
+		}
+		
+		return machine;
+	}
+	
+	private TypePanne randomTypePanne(String machine)
+	{
+		TypePanne typepanne;
+		Character premCar = machine.toLowerCase().charAt(0);
+		
+		if(Character.isDigit(premCar) &&  (Integer.valueOf(premCar.toString())>=0) && (Integer.valueOf(premCar.toString())<6))
+		{
+			int n = (int)(Math.random()*3);
+			
+			switch(n)
+			{
+			case 0:
+				typepanne = TypePanne.CRASH_DISQUE;
+				break;
+			case 1:
+				typepanne = TypePanne.PROBLEME_MEMOIRE;
+				break;
+			default:
+				typepanne = TypePanne.RESEAU;
+				break;
+			}
+		}
+		else
+		{
+			typepanne = TypePanne.RESEAU;
+		}		
+		return typepanne;
 	}
 }
