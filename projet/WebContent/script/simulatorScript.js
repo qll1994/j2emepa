@@ -11,6 +11,7 @@ var messages = document.getElementById("infoContent");
 	openSocket();
 })();
 
+//Fonction qui permet de mettre à jour le message de infoContent. 
 function updateMessage(responseText)
 {
 	var response = JSON.parse(responseText);
@@ -26,36 +27,39 @@ function updateMessage(responseText)
 	document.getElementById("infoContent").innerHTML = message;
 }
 
+//Fonction qui permet de prendre la valeur de machine et typepanne et transmet les valeurs au serveur.
 function generate()
 {
 	var machine = document.getElementById("machine").value;
 	var typepanne = document.getElementById("typepanne").value;	
 	request(updateMessage,"machine="+machine+"&typepanne="+typepanne);
 }
-
+ //Fonction qui informe le serveur que l'on génère aléatoirement des pannes 
 function randomGenerate()
 {
 	request(updateMessage,"param=random");
 }
-
+//Fonction qui informe le serveur que l'on génère plusieurs pannes 
 function manyGenerate()
 {
 	var nombre = document.getElementById("nombre").value;
 	request(updateMessage,"nombre="+nombre);
 }
 
+//Fonction qui informe le serveur que l'on génère plusieurs pannes sur une durée précise
 function generateOverTime()
 {
 	var nombre = document.getElementById("nbOnTime").value;
 	var duree = document.getElementById("dureeOnTime").value;	
 	request(updateMessage,"nombreDuree="+nombre+"&duree="+duree);
 }
-
+//Fonction qui informe le serveur que l'on ne génère plus de pannes 
 function stopGeneration()
 {
 	request(updateMessage,"param=stop");
 }
 
+//Fonction qui communiquee avec le serveur 
 function request(callback, param)	//callback est une fonction, param une String
 {
 	var xhr = getXMLHttpRequest();
@@ -77,6 +81,7 @@ function request(callback, param)	//callback est une fonction, param une String
 	xhr.send(param);
 }
 
+//Fonction qui teste si le navigateur supporte le XMLHTTPRequest object
 function getXMLHttpRequest()
 {
 	var xhr = null;
@@ -107,21 +112,19 @@ function getXMLHttpRequest()
 	return xhr;
 }
 
+//
 function openSocket(){
-    // Ensures only one connection is open at a time
+    // Vérifie s'il y a déjà une connection établie
     if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
        writeResponse("WebSocket is already opened.");
         return;
     }
-    // Create a new instance of the websocket
+    // Créer une nouvelle instance de websocket
     webSocket = new WebSocket("ws:"+SUBPATH+"/Simulator");
      
-    /**
-     * Binds functions to the listeners for the websocket.
-     */
+   
     webSocket.onopen = function(event){
-        // For reasons I can't determine, onopen gets called twice
-        // and the first time event.data is undefined.
+	    
         if(event.data === undefined)
             return;
 
@@ -148,13 +151,14 @@ function openSocket(){
     
     
 }
-
+//Fonction qui teste la connection 
 function tryConnect()
 {
 	var x = setInterval(updateBeforeConnect,1000);
 	setTimeout(function(){clearInterval(x);},(BEFORE_CONNECT+1)*1000);
 }
 
+//Fonction qui assure les mises à jours de l'infoContent pendant la tentative de reconnection 
 function updateBeforeConnect()
 {
 	var accord;
@@ -175,16 +179,19 @@ function updateBeforeConnect()
 	beforeConnect--;
 }
 
+//Fonction qui envoie le type au Websocket
 function sendType()
 {
 	webSocket.send("simulator");
 }
 
+// Fonction qui ferme le Websocket
 function closeSocket(){
 	alert("closing");
     webSocket.close();
 }
 
+//Focntion qui permet  d'écrire du texte au format HTML
 function writeResponse(text){
     messages.innerHTML = text;
 }
