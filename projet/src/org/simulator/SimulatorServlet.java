@@ -45,7 +45,7 @@ public class SimulatorServlet extends HttpServlet {
 	public SimulatorServlet() {
 		super();
 	}
-
+	//Méthode permettant de notifier une nouvelle connection par un utilisateur
 	 @OnOpen
 	 public void onOpen(Session session){
         System.out.println(session.getId() + " has opened a connection");
@@ -56,6 +56,7 @@ public class SimulatorServlet extends HttpServlet {
         }
 	 }
 	 
+	 //Méthode permettant de notifier l'envoi d'un message par un utilisateur
     @OnMessage
     public void onMessage(String message, Session session){
     	System.out.println(session.getId() + " just sent : " + message);
@@ -65,6 +66,7 @@ public class SimulatorServlet extends HttpServlet {
     	}
     } 
 
+	//Méthode permettant de notifier la fin d'une session par un utilisateur
     @OnClose
     public void onClose(Session session){
     	System.out.println("Session " +session.getId()+" ("+ sessions.get(session) +") has ended");
@@ -100,6 +102,7 @@ public class SimulatorServlet extends HttpServlet {
 		doProcess(request, response);
 	}
 
+	
 	private void doProcess(HttpServletRequest request, HttpServletResponse response) 
 	{		
 		String json ="";
@@ -197,6 +200,7 @@ public class SimulatorServlet extends HttpServlet {
 		}
 	}
 	
+	//Méthode permettant de générer une panne souhaitée sur la machine souhaitée.
 	private String generateBreakdown(String machine, String typepanneName)
 	{
 		String json="";
@@ -214,7 +218,7 @@ public class SimulatorServlet extends HttpServlet {
 			while((i<machine.length()) && ok )
 			{
 				Character c= machine.charAt(i);
-				if( !((Character.isDigit(c)) || ( (c>='a') && (c<='f'))) )
+				if( !((Character.isDigit(c)) || ( (c>='a') && (c<='f'))) ) // On vérifie si le nom de la machine est bien en héxadécimale.
 				{
 					ok = false;
 				}
@@ -236,7 +240,7 @@ public class SimulatorServlet extends HttpServlet {
 		
 		if( (typepanne != null) && ok)
 		{
-			String message = panneService.ajoutPanne(machine, typepanne);
+			String message = panneService.ajoutPanne(machine, typepanne); //La panne est validée sur la machine.
 			
 			if(message!=null)
 			{
@@ -251,6 +255,7 @@ public class SimulatorServlet extends HttpServlet {
 		return json;
 	}
 	
+	//Méthode permettant de générer un nombre souhaité de pannes.
 	private String generateXBreakdowns(int nbPannes)
 	{
 		String json="";
@@ -261,7 +266,7 @@ public class SimulatorServlet extends HttpServlet {
 		}
 		else
 		{
-			message = panneService.ajoutPannes(nbPannes);
+			message = panneService.ajoutPannes(nbPannes); //On a ajouté le nombre de pannes désiré.
 		}
 		if(message!=null)
 		{
@@ -270,6 +275,7 @@ public class SimulatorServlet extends HttpServlet {
 		return json;
 	}
 	
+	//Méthode permettant de générer un nombre de pannes choisi sur une durée souhaitée
 	private String generateBreakdownsOverTime(int nbPannes, int duree)
 	{
 		String json="";
@@ -289,15 +295,15 @@ public class SimulatorServlet extends HttpServlet {
 				}
 				else
 				{
-					currentPannes = new PannesDuree(nbPannes, duree, inter);
+					currentPannes = new PannesDuree(nbPannes, duree, inter); //Création d'une instance de PannesDuree
 					
 					 minuteur = new Timer();
 				     tache = new TimerTask() {
 				            public void run() {
 				            	String message;
-				            	currentPannes.setDureeRestante(currentPannes.getDureeRestante() - currentPannes.getInter());
+				            	currentPannes.setDureeRestante(currentPannes.getDureeRestante() - currentPannes.getInter()); //On attribut à currentPannes la durée d'éxécution d'envoie de pannes.
 				            		
-			            		message = panneService.ajoutPanneAlea();
+			            		message = panneService.ajoutPanneAlea(); //On génère une panne aléatoire
 			            		if(message.equals("Breakdown properly added."))
 			            		{
 			            			currentPannes.setNbPannesCurrent(currentPannes.getNbPannesCurrent()+1);
@@ -335,6 +341,7 @@ public class SimulatorServlet extends HttpServlet {
 		return json;
 	}
 	
+	//Méthode permettant de mettre à jour le moniteur.
 	private static void updateMonitors()
 	{
     	List <Session> monitors = new ArrayList<Session>();
@@ -362,6 +369,7 @@ public class SimulatorServlet extends HttpServlet {
 		}
 	}
 	
+	//Méthode permettant d'envoyer des messages aux simulateurs.
 	private static void sendToSimulators(String message)
 	{
 		List <Session> simulators = new ArrayList<Session>();
@@ -386,6 +394,8 @@ public class SimulatorServlet extends HttpServlet {
 	        }
 		}
 	}	
+	
+	// Méthode qui convertit les messages en Json
 	private static String convertToJson(String message)
 	{
 		return "{ \"message\": \" "+message+" \"}";
