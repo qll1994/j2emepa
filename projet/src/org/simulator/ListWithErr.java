@@ -1,7 +1,8 @@
 package org.simulator;
-
 import java.util.List;
-
+/**
+ * Classe qui permet de créer une liste avec un booléen indiquant sa validité.
+ */
 public class ListWithErr<E>
 {
 	private List<E> list;

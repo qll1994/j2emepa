@@ -45,7 +45,10 @@ public class SimulatorServlet extends HttpServlet {
 	public SimulatorServlet() {
 		super();
 	}
-
+	/**
+	 * Méthode permettant de notifier une nouvelle connection par un utilisateur
+	 * @param session
+	 */
 	 @OnOpen
 	 public void onOpen(Session session){
         System.out.println(session.getId() + " has opened a connection");
@@ -55,7 +58,11 @@ public class SimulatorServlet extends HttpServlet {
             ex.printStackTrace();
         }
 	 }
-	 
+	 /**
+	  * Méthode permettant de notifier l'envoi d'un message par un utilisateur
+	  * @param message
+	  * @param session
+	  */
     @OnMessage
     public void onMessage(String message, Session session){
     	System.out.println(session.getId() + " just sent : " + message);
@@ -64,7 +71,10 @@ public class SimulatorServlet extends HttpServlet {
     		sessions.put(session,message);
     	}
     } 
-
+    /**
+     * Méthode permettant de notifier la fin d'une session par un utilisateur
+     * @param session
+     */
     @OnClose
     public void onClose(Session session){
     	System.out.println("Session " +session.getId()+" ("+ sessions.get(session) +") has ended");
@@ -196,7 +206,12 @@ public class SimulatorServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Méthode permettant de générer une panne souhaitée sur la machine souhaitée.
+	 * @param machine
+	 * @param typepanneName
+	 * @return Chaîne de caractère en json
+	 */
 	private String generateBreakdown(String machine, String typepanneName)
 	{
 		String json="";
@@ -250,7 +265,11 @@ public class SimulatorServlet extends HttpServlet {
 		}
 		return json;
 	}
-	
+	/**
+	 * Méthode permettant de générer un nombre souhaité de pannes.
+	 * @param nbPannes
+	 * @return Chaîne de caractère en json
+	 */
 	private String generateXBreakdowns(int nbPannes)
 	{
 		String json="";

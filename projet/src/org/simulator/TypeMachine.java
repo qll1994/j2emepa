@@ -1,5 +1,7 @@
 package org.simulator;
-
+/**
+ * Classe de type énumération relative aux caractéristiques des machines
+ */
 public enum TypeMachine 
 {
 	SERVEUR ("serveur"),
@@ -7,12 +9,18 @@ public enum TypeMachine
 	ROUTEUR ("routeur");
 	
 	private String state;
-	
+	/**
+	 * Constructeur privé 
+	 * @param state
+	 */
 	private TypeMachine(String state)
 	{
 		this.state = state;
 	}
-	
+	/**
+	 * Getteur d'état
+	 * @return état de machine
+	 */
 	public String getState()
 	{
 		return this.state;
