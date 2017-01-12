@@ -1,5 +1,6 @@
 package org.simulator;
 
+//Classe de type énumération relative aux types de pannes 
 public enum TypePanne 
 {
 	RESEAU ("reseau"),
