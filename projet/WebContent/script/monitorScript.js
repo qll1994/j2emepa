@@ -25,15 +25,13 @@ var messages = document.getElementById("infoContent");
 	}		
 	
 	
-	/*recharger la page 
-	le contenu de "information est réinitialisé"
-	*/
+	//Recharge la page en cliquant sur le boutton reload
 	var reloadbutton = document.getElementById("reload");
 	reloadbutton.onclick = function() {
 		document.getElementById("infoContent").innerHTML = "None";
 		reload();
 	}
-	
+	//Dessine le graphe en cliqaunt sur le bouton draw
 	var drawGraph = document.getElementById("drawGraph");
 	drawGraph.onclick = function(){
 		getDataGraph();
@@ -43,6 +41,7 @@ var messages = document.getElementById("infoContent");
 	openSocket(); 
 })();
 
+//Fonction de rechargement de la page. Envoie de la requête au serveur
 function reload()
 {
 	if(current != null)
@@ -56,6 +55,7 @@ function reload()
 	request(loadNumber,"param=number");
 }
 
+//Fonction permettant de réparer une panne
 function fix(responseText)
 {
 	request(loadContent,"param="+current);	
@@ -67,6 +67,7 @@ function fix(responseText)
 	}
 }
 
+//Fonction qui permet de charger les nombres des les cases minute, hour, day, month and ever
 function loadNumber(responseText)
 {
 	var response = JSON.parse(responseText);					
@@ -90,7 +91,7 @@ function loadNumber(responseText)
 		
 	}
 }
-
+//Fonction qui recharge le contenu du tableau en fonction des pannes reçues ou des messages reçus
 function loadContent(responseText) 
 {
 	var response = JSON.parse(responseText);
@@ -136,12 +137,14 @@ function loadContent(responseText)
 	}
 }
 
+//Fonction permettant  de demander un rechargement de la page
 function setReload()
 {
 	currentTime = delai*60;
 	setInterval(updateTime,1000);
 }
 
+//Fonction permettant de mettre à jour le temps
 function updateTime()
 {
 	if(currentTime <= 0)
@@ -176,6 +179,7 @@ function updateTime()
 	document.getElementById("beforeUpdateContent").innerHTML = content;	
 }
 
+//Fonction permettant d'acquérir les données du graphe grâce au serveur.
 function getDataGraph()
 {
 	var param;
@@ -201,6 +205,7 @@ function max(tab){
 	return max;
 }
 
+//Fonction permettant de tracer le graphe
 function drawGraph(responseText)
 {
 	var response = JSON.parse(responseText);
@@ -321,7 +326,7 @@ function drawGraph(responseText)
 		 */
 	}
 }
-
+ //Focntion permettant de communiquer avec le serveur
 function request(callback, param)	//callback est une fonction, param une String
 {
 	var xhr = getXMLHttpRequest();
@@ -343,6 +348,7 @@ function request(callback, param)	//callback est une fonction, param une String
 	xhr.send(param);
 }
 
+//Fonction qui teste si le navigateur supporte le XMLHTTPRequest object
 function getXMLHttpRequest()
 {
 	var xhr = null;
@@ -372,13 +378,15 @@ function getXMLHttpRequest()
 	}	
 	return xhr;
 }
+
+
 function openSocket(){
-    // Ensures only one connection is open at a time
+    // Vérifie s'il y a déjà une connection établie
     if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
        writeResponse("WebSocket is already opened.");
         return;
     }
-    // Create a new instance of the websocket
+     // Créer une nouvelle instance de websocket
     webSocket = new WebSocket("ws:"+SUBPATH+"/Simulator");
      
     /**
@@ -417,12 +425,14 @@ function openSocket(){
     };
 }
 
+//Fonction qui teste la connection 
 function tryConnect()
 {
 	var x = setInterval(updateBeforeConnect,1000);
 	setTimeout(function(){clearInterval(x);},(BEFORE_CONNECT+1)*1000);
 }
 
+//Fonction qui assure les mises à jours de l'infoContent pendant la tentative de reconnection//*
 function updateBeforeConnect()
 {
 	var accord;
@@ -443,15 +453,19 @@ function updateBeforeConnect()
 	beforeConnect--;
 }
 
+
+//Fonction qui envoie le type au Websocket
 function sendType()
 {
 	webSocket.send("monitor");
 }
 
+// Fonction qui ferme le Websocket
 function closeSocket(){
     webSocket.close();
 }
 
+//Fonction qui permet  d'écrire du texte au format HTML
 function writeResponse(text){
     messages.innerHTML = text;
 }

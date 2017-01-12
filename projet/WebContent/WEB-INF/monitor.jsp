@@ -51,6 +51,7 @@
 	<div id="content"></div>
 	<div id="graph">
 		<form id="graphe_form">
+
 			<p>
 				<label for="dayGraph">Day : </label>
 				<select name="dayGraph" id="dayGraph">
