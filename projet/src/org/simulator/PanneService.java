@@ -1,5 +1,7 @@
 package org.simulator;
-
+/**
+ * Interface 
+ */
 public interface PanneService 
 {
 	String ajoutPanne(String machine, TypePanne typepanne);

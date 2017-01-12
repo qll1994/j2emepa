@@ -2,7 +2,9 @@ package org.simulator;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *
+ */
 public class PanneServiceImpl implements PanneService
 {
 	private PanneDAO panneDao = new PanneDAOImpl();
@@ -16,12 +18,14 @@ public class PanneServiceImpl implements PanneService
 	{
 		return panneDao.addRandom();
 	}
-	
+	/**
+	 * Ajout de panne
+	 */
 	public String ajoutPannes(int nbPannes)
 	{
 		return panneDao.addMany(nbPannes);
 	}
-
+	
 	public int nbMinute() {
 		return panneDao.nbMinute();
 	}

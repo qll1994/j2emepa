@@ -5,11 +5,29 @@ package org.simulator;
  */
 public class Panne 
 {
+	/**
+	 * Identifant de panne
+	 */
 	private int id;
+	/**
+	 * Heure de panne
+	 */
 	private String heure;
+	/**
+	 * Type de panne
+	 */
 	private TypePanne typepanne;
+	/**
+	 * Nom de machine 
+	 */
 	private String machine;
+	/**
+	 * Type de machine
+	 */
 	private TypeMachine typemachine;
+	/**
+	 * Booléen indiquant si cette panne est reparée
+	 */
 	private boolean reparee;
 	
 	public Panne(int id, String heure, TypePanne typepanne, String machine, TypeMachine typemachine,boolean reparee) 
