@@ -1,5 +1,6 @@
 package org.simulator;
 
+//Classe PannesDuree qui sera utile pour envoyer des pannes sur une durée
 public class PannesDuree 
 {
 	private int nbPannesTotal;
