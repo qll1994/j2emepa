@@ -2,9 +2,25 @@ package org.simulator;
 
 public interface PanneDAO 
 {
+	/**
+	 * Renvoi le résultat d'ajout d'une panne
+	 * @param machine
+	 * @param typepanne
+	 * @return message de résultat
+	 */
 	String add(String machine, TypePanne typepanne);
+	/**
+	 * Renvoi le résultat d'ajout aléatoire d'une panne
+	 * @return message de résultat
+	 */
 	String addRandom();
 	String addMany(int nbPannes);
+	/**
+	 * Renvoi le résultat de réparer d'une panne
+	 * @param id
+	 * @param fixed
+	 * @return le résultat d'activité
+	 */
 	String fix(int id, boolean fixed);
 	
 	int nbMinute();
