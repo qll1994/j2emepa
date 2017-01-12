@@ -191,7 +191,7 @@ function closeSocket(){
     webSocket.close();
 }
 
-//Focntion qui permet  d'écrire du texte au format HTML
+//Fonction qui permet  d'écrire du texte au format HTML
 function writeResponse(text){
     messages.innerHTML = text;
 }
