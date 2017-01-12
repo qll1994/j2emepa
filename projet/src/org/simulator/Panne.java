@@ -1,5 +1,6 @@
 package org.simulator;
 
+//Classe Panne permettant de créer une panne avec tous ses attributs 
 public class Panne 
 {
 	private int id;
