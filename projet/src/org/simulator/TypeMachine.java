@@ -1,5 +1,6 @@
 package org.simulator;
 
+//Classe de type énumération relative aux caractéristiques des machines
 public enum TypeMachine 
 {
 	SERVEUR ("serveur"),
