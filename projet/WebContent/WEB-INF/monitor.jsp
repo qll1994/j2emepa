@@ -50,7 +50,7 @@
 	</div>
 	<div id="content"></div>
 	<div id="graph">
-		<form id="graphe_form">
+		<form>
 
 			<p>
 				<label for="dayGraph">Day : </label>
