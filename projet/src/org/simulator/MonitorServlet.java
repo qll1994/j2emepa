@@ -223,17 +223,20 @@ public class MonitorServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 	}
-		
+	
+	// Méthode qui convertit les messages en Json	
 	private static String convertToJson(String message)
 	{
 		return "{ \"message\": \" "+message+" \"}";
 	}
 	
+	// Méthode qui convertit les dates en Json
 	private static String convertToJson(int minute, int hour, int day, int month, int ever)
 	{
 		return "{ \"minute\": \" "+minute+" \", \"hour\": \" "+hour+" \" , \"day\": \" "+day+" \" , \"month\": \" "+month+" \" , \"ever\": \" "+ever+" \" }";
 	}
-
+	
+	// Méthode qui convertit les tableaux en Json
 	private static String convertToJson(int[] tab)
 	{
 		String json = "{ \"graph\" : {";
@@ -249,6 +252,7 @@ public class MonitorServlet extends HttpServlet {
 		return json;
 	}	
 	
+	// Méthode qui convertit les listes de pannes en Json
 	private static String convertToJson(List<Panne> listPannes)
 	{
 		boolean first = true;		
