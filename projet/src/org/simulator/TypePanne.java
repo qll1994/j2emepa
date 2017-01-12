@@ -1,5 +1,5 @@
 package org.simulator;
-
+//
 public enum TypePanne 
 {
 	RESEAU ("reseau"),
