@@ -1,5 +1,8 @@
-# j2emepa
-projet j2e
+# j2emepa3
+Projet j2e
+Base de données : MySQL
+Serveur Tomcat : Apache Tomcat 8.5
+
 
 ====================================================================
                        Projet Chaos Monkey
@@ -39,6 +42,9 @@ de passe d'accès à la nouvelle console.
 
 Note : c'est également ce fichier qu'il faut éditer si vous souhaitez
 utiliser une base de données Oracle.
+
+Il faut ensuite redémarrer le serveur Tomcat pour valider les
+changements.
 
 
 ====================================================================
