@@ -8,10 +8,20 @@ import java.util.List;
 
 public class PanneDAOImpl implements PanneDAO
 {
+	/**
+	 * Ajoute une panne à la base de données
+	 * La machine sur laquelle a lieu la panne et le type de la panne sont passés en paramètres.
+	 * La méthode renvoie un message indiquant que la date a été ajoutée proprement en cas de succes,
+	 * et renvoie une erreur en cas d'échec. 
+	 */
 	public String add(String machine, TypePanne typepanne) 
 	{
 		//nomenclature : machine commençant par 0 à 5 -> serveurs, de 6 à A -> pare-feux, de B à F -> routeur
 		TypeMachine typemachine;
+		
+		/*Récupération du premier caractère et teste
+		 * pour connaître le type de la machine 
+		 */
 		Character premCar = machine.toLowerCase().charAt(0);
 		
 		if(Character.isDigit(premCar))
@@ -41,6 +51,7 @@ public class PanneDAOImpl implements PanneDAO
 			}
 		}
 		
+		//"update" contient la requète sql pour insérer la panne
 		String update = "insert into pannes values (null,NOW(),\""+typepanne.getState()+"\",\""+machine+"\",\""+typemachine.getState()+"\",false);";
 		Connection conn = null;
 		Statement stat = null;
@@ -48,11 +59,12 @@ public class PanneDAOImpl implements PanneDAO
 		
 		try
 		{
+			//Connexion à la base de données
 			conn = DBManager.getInstance().getConnection();
 			if( conn != null)
 			{
 				stat = conn.createStatement();
-				stat.executeUpdate(update);
+				stat.executeUpdate(update); //exécusion de la requète sql
 				message = "Breakdown properly added.";
 			}
 			else
@@ -74,20 +86,30 @@ public class PanneDAOImpl implements PanneDAO
 		return message;
 	}
 	
+	
+	/**
+	 * Indique que la panne dont l'id est passé en paramètre a été réparée
+	 * La méthode renvoie un message :
+	 * - indiquant que la mis à jour a été faite
+	 * - indiquant une erreur en cas d'échec 
+	 */
 	public String fix(int id,boolean fixed)
 	{
+		
+		//"update" contient la requète sql pour enregistrer la réparation d'une panne
 		String update = "UPDATE pannes SET reparee="+fixed+" WHERE id="+id+";";
 		Connection conn = null;
 		Statement stat = null;
 		String message ;
 		
+		//connexion à la base de données
 		try
 		{
 			conn = DBManager.getInstance().getConnection();
 			if( conn != null)
 			{
 				stat = conn.createStatement();
-				stat.executeUpdate(update);
+				stat.executeUpdate(update);	//exécution de la requète sql
 				message = "Breakdown properly update.";
 			}
 			else
@@ -109,95 +131,25 @@ public class PanneDAOImpl implements PanneDAO
 		return message;
 	}
 	
-	public String addMany(int nbPannes)
-	{
-		int cpt = nbPannes;	
-		int i=0;
-		boolean stop = false;
-		
-		while(!stop && i<nbPannes)
-		{
-			String tmp = this.addRandom();
-			if(tmp.equals("Error : Unable to reach database."))
-			{
-				stop = true;
-				cpt = 0;
-			}
-			else if(!tmp.equals("Breakdown properly added."))
-			{
-				cpt--;
-			}
-			i++;
-		}
-		
-		if(stop)
-		{
-			return "Error : Unable to reach database.";
-		}
-		else
-		{
-			return cpt+" out of "+ nbPannes +" breakdown(s) properly added.";
-		}
-	}
-	public String addRandom()
-	{
-		String machine = this.randomMachine();
-		return this.add(machine, this.randomTypePanne(machine));
-	}
 	
-	private String randomMachine()
-	{
-		String machine = "";
-		
-		for(int i=0;i<16;i++)
-		{
-			Integer n = new Integer((int)(Math.random()*16));
-			machine += Integer.toHexString(n);
-		}
-		
-		return machine;
-	}
-	
-	private TypePanne randomTypePanne(String machine)
-	{
-		TypePanne typepanne;
-		Character premCar = machine.toLowerCase().charAt(0);
-		
-		if(Character.isDigit(premCar) &&  (Integer.valueOf(premCar.toString())>=0) && (Integer.valueOf(premCar.toString())<6))
-		{
-			int n = (int)(Math.random()*3);
-			
-			switch(n)
-			{
-			case 0:
-				typepanne = TypePanne.CRASH_DISQUE;
-				break;
-			case 1:
-				typepanne = TypePanne.PROBLEME_MEMOIRE;
-				break;
-			default:
-				typepanne = TypePanne.RESEAU;
-				break;
-			}
-		}
-		else
-		{
-			typepanne = TypePanne.RESEAU;
-		}		
-		return typepanne;
-	}
-	
+	/**
+	 *  Méthode générique pour exécuter une requête sql passée en paramètre  
+	 * Cette requète comporte le mot clé "count".
+	 * La méthode renvoie l'entier résultat de la requète.
+	 */
 	private int count(String query) {
 		Connection conn = null;
 		int n=0;		
 		Statement stat = null;
 		ResultSet rs = null;
 		
+		
+		//connexion à la base de données
 		try {
 			conn = DBManager.getInstance().getConnection();
 			if (conn != null) {
 				stat = conn.createStatement();
-				rs = stat.executeQuery(query);
+				rs = stat.executeQuery(query); //exécution de la commande sql
 				while(rs.next())
 				{
 					n = rs.getInt("n");
@@ -218,20 +170,29 @@ public class PanneDAOImpl implements PanneDAO
 		return n;
 	}
 	
+	/**
+	 * Méthode générique pour exécuter une requête sql passée en paramètre
+	 *La méthode une liste des pannes résultats de la requète 
+	 */ 
 	private ListWithErr<Panne> find(String query) 
 	{		
+		
 		ListWithErr<Panne> listWithErr = new ListWithErr<>();		
 		List<Panne> listPannes = new ArrayList<Panne>();
 		
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
+		
+		//connexion à la base de donnée
 		try {
 			conn = DBManager.getInstance().getConnection();
 			if (conn != null) 
 			{
 				stat = conn.createStatement();
-				rs = stat.executeQuery(query);
+				
+				//rs contient le résultat de la requète
+				rs = stat.executeQuery(query); 
 				while (rs.next()) 
 				{
 					int id = rs.getInt("id");
@@ -240,6 +201,8 @@ public class PanneDAOImpl implements PanneDAO
 					String machine = rs.getString("machine");
 					String typemachineName = rs.getString("typemachine");
 					Boolean reparee = rs.getBoolean("reparee");
+					
+					//ajout de la panne au résultat 
 					listPannes.add(new Panne(id,hour,toTypePanne(typepanneName),machine,toTypeMachine(typemachineName),reparee));				
 				}
 				listWithErr = new ListWithErr<Panne>(listPannes,true);
@@ -260,33 +223,58 @@ public class PanneDAOImpl implements PanneDAO
 		}
 		return listWithErr;
 	}
+	
+	/**
+	 * compte le nombre de pannes survenues lors de la dernière minute
+	 */
 	public int nbMinute() {
 		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<60;");
 	}
 
+	/**
+	 * compte le nombre de pannes survenues lors de la dernière heure
+	 */
 	public int nbHour() {
 		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<3600;");
 	}
 
+	/**
+	 * compte le nombre de pannes survenues lors du dernier jour
+	 */
 	public int nbDay() {
 		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<86400;");
 	}
 
+	/**
+	 * compte le nombre de pannes survenues lors du dernier mois
+	 */
 	public int nbMonth() {
 		// 1 mois de 30 jours
 		return count("select count(id) as n from pannes where TIME_TO_SEC(TIMEDIFF(NOW(),heure))<2592000;");
 	}
 
+	/**
+	 * compte le nombre total de pannes
+	 */
 	public int nbEver() {
 		return count("select count(id) as n from pannes;");
 	}
 	
+	/**
+	 * Renvoie le nombre de pannes survenues à la date et l'heure passé en paramètres
+	 *La méthode évalue la méthode count() définie précédement 
+	 *avec les arguments passés en paramètre	
+	 */
 	public int nbPanne(int heureDebut, int duree, int jour, int mois, int annee)
 	{
 		String heure = "\""+annee+"-"+mois+"-"+jour+" "+heureDebut+":00:00\"";
 		return count("select count(*) as n from pannes where heure>="+heure+" AND (heure<addtime("+heure+",\""+duree+":00:00\"));");
 	}
 	
+	/**
+	 * renvoie le type de la panne en fonction 
+	 *	de son nom (chaîne de caractère) passé en paramètre
+	 */ 
 	private TypePanne toTypePanne(String n)
 	{
 		TypePanne typepanne;
@@ -304,6 +292,13 @@ public class PanneDAOImpl implements PanneDAO
 		}
 		return typepanne;
 	}
+	
+	
+	/**
+	 * renvoie le type de la machine en fonction 
+	 * de son nom (chaîne de caractère) passé en paramètre
+	 */
+	
 	private TypeMachine toTypeMachine(String n)
 	{
 		TypeMachine typemachine;
@@ -321,6 +316,13 @@ public class PanneDAOImpl implements PanneDAO
 		}
 		return typemachine;
 	}
+	
+	
+	/**
+	 *  Les méthodes suivantes renvoient le nombre de pannes pendant une
+	 * période donnée éventuelement classé par type (pour les méthodes avec le suffixe "PerType")
+	 * en évaluant la méthode find() définie précédement 
+	 */
 	
 	public ListWithErr<Panne> lastMinute()
 	{
@@ -363,3 +365,4 @@ public class PanneDAOImpl implements PanneDAO
 		return find("SELECT id,heure,typepanne,machine,typemachine,reparee FROM pannes ORDER BY typemachine;");
 	}
 }
+

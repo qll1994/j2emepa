@@ -10,12 +10,6 @@ public interface PanneDAO
 	 */
 	String add(String machine, TypePanne typepanne);
 	/**
-	 * Renvoi le résultat d'ajout aléatoire d'une panne
-	 * @return message de résultat
-	 */
-	String addRandom();
-	String addMany(int nbPannes);
-	/**
 	 * Renvoi le résultat de réparer d'une panne
 	 * @param id
 	 * @param fixed

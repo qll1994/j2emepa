@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -80,7 +81,15 @@ public class SimulatorServlet extends HttpServlet {
     	System.out.println("Session " +session.getId()+" ("+ sessions.get(session) +") has ended");
     	sessions.remove(session);	        
     }
-
+    /**
+     * Méthode permettant de notifier la réception d'une erreur venant du client (fermeture du client sans fermer le socket)
+     * @param session
+     * @param thr
+     */
+    @OnError
+    public void onError(Session session, Throwable thr) {
+    	System.out.println("Session " +session.getId()+" ("+ sessions.get(session) +") just sent an error message");
+    }
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)

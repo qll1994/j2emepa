@@ -97,7 +97,7 @@ div
 	margin-top : 20px;
 	text-align : center;
 	width: 680px;
-	max-height : 500px;
+	max-height : 400px;
 	overflow : auto;
 	border : none;
 }
@@ -107,8 +107,13 @@ div
 	text-align : center;
 	font-weight: bold;
 	margin: auto;
-	width : 400px;
 }
+
+.data
+{
+	box-shadow : none;
+}
+
 #reload, .button
 {
 	display : block;
